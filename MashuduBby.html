@@ -1,0 +1,194 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mashudu's Special Page</title>
+    <style>
+        
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background-color: #000;
+    color: #fff;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+}
+#container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+.button {
+    background-color: #4CAF50;
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+}
+.digital-clock {
+    font-size: 2em;
+    text-align: center;
+    margin-top: 20px;
+    font-family: 'Courier New', monospace;
+    color: #00ff00;
+    text-shadow: 0 0 10px #00ff00;
+}
+#mood-tracker, #todo-list, #drawing-area, #meditation-timer {
+    margin-top: 20px;
+    text-align: center;
+}
+canvas {
+    border: 1px solid white;
+}
+</style>
+
+    </style>
+</head>
+<body>
+    <div id="container">
+        
+<div id="container">
+    <h1>Welcome, Mashudu!</h1>
+    <div id="digital-clock" class="digital-clock"></div>
+    
+    <div id="mood-tracker">
+        <h2>How are you feeling today?</h2>
+        <div id="mood-buttons"></div>
+        <p id="mood-message"></p>
+    </div>
+    
+    <div id="todo-list">
+        <h2>Todo List</h2>
+        <input type="text" id="todo-input" placeholder="Add a new task">
+        <button onclick="addTodo()" class="button">Add Task</button>
+        <ul id="todo-list"></ul>
+    </div>
+    
+    <div id="drawing-area">
+        <h2>Doodle Pad</h2>
+        <canvas id="drawing-canvas" width="300" height="200"></canvas>
+        <br>
+        <button onclick="clearCanvas()" class="button">Clear Canvas</button>
+    </div>
+    
+    <div id="meditation-timer">
+        <h2>Meditation Timer</h2>
+        <input type="number" id="meditation-minutes" min="1" value="5">
+        <button onclick="startMeditation()" class="button">Start Meditation</button>
+        <p id="meditation-countdown"></p>
+    </div>
+</div>
+
+    </div>
+    <script>
+        
+<script>
+// Digital Clock
+function updateClock() {
+    const now = new Date();
+    const timeString = now.toLocaleTimeString();
+    document.getElementById('digital-clock').textContent = timeString;
+}
+setInterval(updateClock, 1000);
+
+// Mood Tracker
+const moods = ['😊', '😐', '😢', '😡', '😴'];
+function createMoodButtons() {
+    const moodContainer = document.getElementById('mood-buttons');
+    moods.forEach(mood => {
+        const button = document.createElement('button');
+        button.textContent = mood;
+        button.onclick = () => selectMood(mood);
+        moodContainer.appendChild(button);
+    });
+}
+function selectMood(mood) {
+    document.getElementById('mood-message').textContent = `You're feeling ${mood} today!`;
+}
+
+// Todo List
+function addTodo() {
+    const input = document.getElementById('todo-input');
+    const todo = input.value.trim();
+    if (todo) {
+        const li = document.createElement('li');
+        li.textContent = todo;
+        document.getElementById('todo-list').appendChild(li);
+        input.value = '';
+    }
+}
+
+// Drawing Canvas
+let isDrawing = false;
+const canvas = document.getElementById('drawing-canvas');
+const ctx = canvas.getContext('2d');
+
+canvas.addEventListener('mousedown', startDrawing);
+canvas.addEventListener('mousemove', draw);
+canvas.addEventListener('mouseup', stopDrawing);
+canvas.addEventListener('mouseout', stopDrawing);
+
+function startDrawing(e) {
+    isDrawing = true;
+    draw(e);
+}
+
+function draw(e) {
+    if (!isDrawing) return;
+    ctx.lineWidth = 2;
+    ctx.lineCap = 'round';
+    ctx.strokeStyle = '#fff';
+
+    ctx.lineTo(e.clientX - canvas.offsetLeft, e.clientY - canvas.offsetTop);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(e.clientX - canvas.offsetLeft, e.clientY - canvas.offsetTop);
+}
+
+function stopDrawing() {
+    isDrawing = false;
+    ctx.beginPath();
+}
+
+function clearCanvas() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+}
+
+// Meditation Timer
+let meditationInterval;
+function startMeditation() {
+    const minutes = parseInt(document.getElementById('meditation-minutes').value);
+    let seconds = minutes * 60;
+    clearInterval(meditationInterval);
+    meditationInterval = setInterval(() => {
+        if (seconds <= 0) {
+            clearInterval(meditationInterval);
+            document.getElementById('meditation-countdown').textContent = 'Done!';
+            return;
+        }
+        const minutesLeft = Math.floor(seconds / 60);
+        const secondsLeft = seconds % 60;
+        document.getElementById('meditation-countdown').textContent = 
+            `${minutesLeft}:${secondsLeft.toString().padStart(2, '0')}`;
+        seconds--;
+    }, 1000);
+}
+
+// Initialize components
+window.onload = function() {
+    createMoodButtons();
+    updateClock();
+};
+</script>
+
+    </script>
+</body>
+</html>
